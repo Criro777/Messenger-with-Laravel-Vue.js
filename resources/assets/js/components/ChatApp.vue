@@ -1,26 +1,35 @@
 <template>
     <div class="chat-app">
-        <Conversation :contact="selectedContact" :messages="messages"/>
         <ContactsList :contacts="contacts"/>
     </div>
 </template>
 
 <script>
-    import {mapActions} from 'vuex';
+    import ContactsList from './ContactsList';
+    import {mapActions, mapGetters} from 'vuex';
+
     export default {
+        props: {
+            user: {
+                type: Object,
+                required: true
+            }
+        },
         data() {
             return {
                 selectedContact: null,
                 messages: [],
-                contacts: [],
             };
         },
         methods: {
             ...mapActions(["getContacts"]),
         },
-        mounted() {
+        computed: {
+            ...mapGetters(['contacts'])
+        },
+        created() {
             this.getContacts()
-            this.contacts = this.$store.getters.contacts
-        }
+        },
+        components: {ContactsList}
     }
 </script>
