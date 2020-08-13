@@ -1,12 +1,16 @@
 export default {
     state: {
-        contacts: []
+        contacts: [],
+        conversations: [],
     },
 
     mutations: {
         contacts(state, contacts) {
             state.contacts = contacts
-        }
+        },
+        conversationFor(state, conversation) {
+            state.conversations = conversation
+        },
     },
 
     actions: {
@@ -15,6 +19,12 @@ export default {
                 .then((response) => {
                     context.commit('contacts', response.data);
                 })
+        },
+        async getConversationFor(context, id) {
+            await axios.get(`/conversation/${id}`)
+                .then((response) => {
+                    context.commit('conversationFor', response.data);
+                })
         }
 
     },
@@ -22,6 +32,9 @@ export default {
     getters: {
         contacts(state) {
             return state.contacts
+        },
+        messages(state) {
+            return state.conversations
         }
     }
 }

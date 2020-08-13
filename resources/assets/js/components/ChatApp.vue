@@ -1,11 +1,13 @@
 <template>
     <div class="chat-app">
-        <ContactsList :contacts="contacts"/>
+        <Conversation :contact="selectedContact" :messages="messages"/>
+        <ContactsList :contacts="contacts" @selected="beginConversation"/>
     </div>
 </template>
 
 <script>
     import ContactsList from './ContactsList';
+    import Conversation from './Conversation';
     import {mapActions, mapGetters} from 'vuex';
 
     export default {
@@ -18,18 +20,29 @@
         data() {
             return {
                 selectedContact: null,
-                messages: [],
+               // messages: []
             };
         },
         methods: {
-            ...mapActions(["getContacts"]),
+            ...mapActions(["getContacts", "getConversationFor"]),
+            beginConversation(contact) {
+                this.getConversationFor(contact.id)
+               // this.messages = this.$store.getters.messages(contact.id)
+                this.selectedContact = contact
+                console.log(this.$store.getters.messages)
+            }
         },
         computed: {
-            ...mapGetters(['contacts'])
+            ...mapGetters(['contacts', 'messages'])
         },
         created() {
             this.getContacts()
         },
-        components: {ContactsList}
+        components: {ContactsList, Conversation}
     }
 </script>
+<style lang="scss" scoped>
+    .chat-app {
+        display: flex;
+    }
+</style>
