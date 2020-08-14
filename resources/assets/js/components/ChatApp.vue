@@ -1,6 +1,6 @@
 <template>
     <div class="chat-app">
-        <Conversation :contact="selectedContact" :messages="messages"/>
+        <Conversation :contact="selectedContact" :messages="messages" @new="saveNewMessage"/>
         <ContactsList :contacts="contacts" @selected="beginConversation"/>
     </div>
 </template>
@@ -20,17 +20,20 @@
         data() {
             return {
                 selectedContact: null,
-               // messages: []
             };
         },
         methods: {
-            ...mapActions(["getContacts", "getConversationFor"]),
+            ...mapActions(["getContacts", "getConversationFor", "sendMessageTo"]),
             beginConversation(contact) {
                 this.getConversationFor(contact.id)
-               // this.messages = this.$store.getters.messages(contact.id)
                 this.selectedContact = contact
-                console.log(this.$store.getters.messages)
-            }
+            },
+            saveNewMessage(text) {
+                this.sendMessageTo({
+                    contact_id: this.selectedContact.id,
+                    text: text
+                })
+            },
         },
         computed: {
             ...mapGetters(['contacts', 'messages'])

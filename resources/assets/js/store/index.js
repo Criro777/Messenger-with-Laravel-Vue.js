@@ -1,7 +1,7 @@
 export default {
     state: {
         contacts: [],
-        conversations: [],
+        conversation: []
     },
 
     mutations: {
@@ -9,8 +9,11 @@ export default {
             state.contacts = contacts
         },
         conversationFor(state, conversation) {
-            state.conversations = conversation
+            state.conversation = conversation
         },
+        messageToConversation(state, message) {
+            state.conversation.push(message)
+        }
     },
 
     actions: {
@@ -25,6 +28,11 @@ export default {
                 .then((response) => {
                     context.commit('conversationFor', response.data);
                 })
+        },
+        async sendMessageTo(context, data) {
+            await axios.post('/conversation/send', data).then((response) => {
+                context.commit('messageToConversation', response.data);
+            })
         }
 
     },
@@ -34,7 +42,7 @@ export default {
             return state.contacts
         },
         messages(state) {
-            return state.conversations
+            return state.conversation
         }
     }
 }
