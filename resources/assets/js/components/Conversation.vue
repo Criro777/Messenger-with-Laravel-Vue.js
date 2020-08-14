@@ -28,6 +28,7 @@
                     return;
                 }
 
+
                 this.$emit('new', text);
             }
         },

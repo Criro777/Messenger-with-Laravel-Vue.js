@@ -27,6 +27,9 @@ class MessagesController extends Controller
             'text' => $request->text
         ]);
 
+       // broadcast(new NewMessage($message));
+        \App\Events\NewMessage::dispatch($message);
+
         return response()->json($message);
 
     }

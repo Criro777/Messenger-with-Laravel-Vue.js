@@ -34,12 +34,25 @@
                     text: text
                 })
             },
+            handleIncoming(message) {
+                if (this.selectedContact && message.from === this.selectedContact.id) {
+                    return
+                }
+                alert(message.text)
+                //this.updateUnreadCount(message.from_contact, false);
+            },
         },
         computed: {
             ...mapGetters(['contacts', 'messages'])
         },
-        created() {
+
+        mounted() {
             this.getContacts()
+            Echo.private(`messages${this.user.id}`)
+                .listen('NewMessage', (e) => {
+                    console.log('handleIncoming', e.message)
+                    this.handleIncoming(e.message);
+                });
         },
         components: {ContactsList, Conversation}
     }
