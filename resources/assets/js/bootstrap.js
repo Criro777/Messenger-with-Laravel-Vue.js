@@ -45,14 +45,14 @@ if (token) {
  */
 
 import Echo   from 'laravel-echo'
-import Pusher from "pusher-js"
-//window.Pusher = require('pusher-js');
+//import Pusher from "pusher-js"
+window.Pusher = require('pusher-js');
 
 
-Pusher.log = function(message)
-{
-    window.console.log(message)
-}
+// Pusher.log = function(message)
+// {
+//     window.console.log(message)
+// }
 
 window.Echo = new Echo({
     broadcaster: 'pusher',

@@ -25,6 +25,7 @@
         methods: {
             ...mapActions(["getContacts", "getConversationFor", "sendMessageTo"]),
             beginConversation(contact) {
+                this.updateUnreadCount(contact, true)
                 this.getConversationFor(contact.id)
                 this.selectedContact = contact
             },
@@ -38,9 +39,21 @@
                 if (this.selectedContact && message.from === this.selectedContact.id) {
                     return
                 }
-                alert(message.text)
-                //this.updateUnreadCount(message.from_contact, false);
+
+                this.updateUnreadCount(message.from_contact, false)
             },
+            updateUnreadCount(contact, reset) {
+                this.contacts.map((single) => {
+                    if (single.id !== contact.id) {
+                        return single;
+                    }
+                    if (reset)
+                        single.unread = 0;
+                    else
+                        single.unread += 1;
+                    return single;
+                })
+            }
         },
         computed: {
             ...mapGetters(['contacts', 'messages'])

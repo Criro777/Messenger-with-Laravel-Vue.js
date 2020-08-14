@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Messenger</div>
 
-                <div class="card-body" id ="app">
+                <div style="padding:0 !important;" class="card-body" id ="app">
                     <chat-app :user="{{ auth()->user() }}"></chat-app>
                 </div>
             </div>

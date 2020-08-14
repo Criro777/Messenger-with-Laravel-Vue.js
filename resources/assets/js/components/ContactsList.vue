@@ -1,8 +1,8 @@
 <template>
     <div class="contacts-list">
         <ul>
-            <li v-for="(contact, index) in contacts" :key="contact.id" @click="selectContact(index, contact)"
-                :class="{ 'selected' : index === selected}">
+            <li v-for="contact in sortedContacts" :key="contact.id" @click="selectContact(contact)"
+                :class="{ 'selected' : contact === selected}">
                 <div class="avatar">
                     <img :src="contact.profile_image" :alt="contact.name">
                 </div>
@@ -10,6 +10,7 @@
                     <p class="name">{{ contact.name }}</p>
                     <p class="email">{{ contact.email }}</p>
                 </div>
+                <span class="unread" v-if="contact.unread">{{ contact.unread }}</span>
             </li>
         </ul>
     </div>
@@ -25,13 +26,23 @@
         },
         data() {
             return {
-                selected: 0
+                selected: this.contacts.length ? this.contacts[0] : null
             }
         },
         methods: {
-            selectContact(index, contact) {
-                this.selected = index
+            selectContact(contact) {
+                this.selected = contact
                 this.$emit('selected', contact)
+            }
+        },
+        computed: {
+            sortedContacts() {
+                return _.sortBy(this.contacts, [(contact) => {
+                    if (contact === this.selected) {
+                        return Infinity;
+                    }
+                    return contact.unread;
+                }]).reverse();
             }
         }
 

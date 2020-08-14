@@ -16176,8 +16176,6 @@ var app = new Vue({
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_pusher_js__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_pusher_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_pusher_js__);
 
 window._ = __webpack_require__(18);
 window.Popper = __webpack_require__(6).default;
@@ -16189,9 +16187,9 @@ window.Popper = __webpack_require__(6).default;
  */
 
 try {
-    window.$ = window.jQuery = __webpack_require__(7);
+  window.$ = window.jQuery = __webpack_require__(7);
 
-    __webpack_require__(20);
+  __webpack_require__(20);
 } catch (e) {}
 
 /**
@@ -16213,9 +16211,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 /**
@@ -16225,19 +16223,19 @@ if (token) {
  */
 
 
+//import Pusher from "pusher-js"
+window.Pusher = __webpack_require__(40);
 
-//window.Pusher = require('pusher-js');
-
-
-__WEBPACK_IMPORTED_MODULE_1_pusher_js___default.a.log = function (message) {
-    window.console.log(message);
-};
+// Pusher.log = function(message)
+// {
+//     window.console.log(message)
+// }
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
-    broadcaster: 'pusher',
-    key: "e7ff6e8cc38501166469",
-    cluster: "eu",
-    encrypted: true
+  broadcaster: 'pusher',
+  key: "e7ff6e8cc38501166469",
+  cluster: "eu",
+  encrypted: true
 });
 
 /***/ }),
@@ -62372,6 +62370,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapActions */])(["getContacts", "getConversationFor", "sendMessageTo"]), {
         beginConversation: function beginConversation(contact) {
+            this.updateUnreadCount(contact, true);
             this.getConversationFor(contact.id);
             this.selectedContact = contact;
         },
@@ -62385,8 +62384,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             if (this.selectedContact && message.from === this.selectedContact.id) {
                 return;
             }
-            alert(message.text);
-            //this.updateUnreadCount(message.from_contact, false);
+
+            this.updateUnreadCount(message.from_contact, false);
+        },
+        updateUnreadCount: function updateUnreadCount(contact, reset) {
+            this.contacts.map(function (single) {
+                if (single.id !== contact.id) {
+                    return single;
+                }
+                if (reset) single.unread = 0;else single.unread += 1;
+                return single;
+            });
         }
     }),
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["c" /* mapGetters */])(['contacts', 'messages'])),
@@ -62518,6 +62526,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -62528,14 +62537,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     data: function data() {
         return {
-            selected: 0
+            selected: this.contacts.length ? this.contacts[0] : null
         };
     },
 
     methods: {
-        selectContact: function selectContact(index, contact) {
-            this.selected = index;
+        selectContact: function selectContact(contact) {
+            this.selected = contact;
             this.$emit('selected', contact);
+        }
+    },
+    computed: {
+        sortedContacts: function sortedContacts() {
+            var _this = this;
+
+            return _.sortBy(this.contacts, [function (contact) {
+                if (contact === _this.selected) {
+                    return Infinity;
+                }
+                return contact.unread;
+            }]).reverse();
         }
     }
 
@@ -62552,15 +62573,15 @@ var render = function() {
   return _c("div", { staticClass: "contacts-list" }, [
     _c(
       "ul",
-      _vm._l(_vm.contacts, function(contact, index) {
+      _vm._l(_vm.sortedContacts, function(contact) {
         return _c(
           "li",
           {
             key: contact.id,
-            class: { selected: index === _vm.selected },
+            class: { selected: contact === _vm.selected },
             on: {
               click: function($event) {
-                return _vm.selectContact(index, contact)
+                return _vm.selectContact(contact)
               }
             }
           },
@@ -62575,7 +62596,13 @@ var render = function() {
               _c("p", { staticClass: "name" }, [_vm._v(_vm._s(contact.name))]),
               _vm._v(" "),
               _c("p", { staticClass: "email" }, [_vm._v(_vm._s(contact.email))])
-            ])
+            ]),
+            _vm._v(" "),
+            contact.unread
+              ? _c("span", { staticClass: "unread" }, [
+                  _vm._v(_vm._s(contact.unread))
+                ])
+              : _vm._e()
           ]
         )
       }),
