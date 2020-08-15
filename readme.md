@@ -1,4 +1,4 @@
 Messenger realtime application with Laravel and Vue.js
 
-![Screenshot](screen1.png)
-![Screenshot](screen2.png)
+![Screenshot](screen1.PNG)
+![Screenshot](screen2.PNG)
