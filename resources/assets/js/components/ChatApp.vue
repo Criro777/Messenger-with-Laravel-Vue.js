@@ -61,7 +61,7 @@
 
         mounted() {
             this.getContacts()
-            Echo.private(`messages${this.user.id}`)
+            Echo.private(`messages.${this.user.id}`)
                 .listen('NewMessage', (e) => {
                     console.log('handleIncoming', e.message)
                     this.handleIncoming(e.message);

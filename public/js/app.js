@@ -16187,9 +16187,9 @@ window.Popper = __webpack_require__(6).default;
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(7);
+    window.$ = window.jQuery = __webpack_require__(7);
 
-  __webpack_require__(20);
+    __webpack_require__(20);
 } catch (e) {}
 
 /**
@@ -16211,9 +16211,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 /**
@@ -16223,19 +16223,18 @@ if (token) {
  */
 
 
-//import Pusher from "pusher-js"
+
 window.Pusher = __webpack_require__(40);
 
-// Pusher.log = function(message)
-// {
-//     window.console.log(message)
-// }
+Pusher.log = function (message) {
+    window.console.log(message);
+};
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
-  broadcaster: 'pusher',
-  key: "e7ff6e8cc38501166469",
-  cluster: "eu",
-  encrypted: true
+    broadcaster: 'pusher',
+    key: "e7ff6e8cc38501166469",
+    cluster: "eu",
+    encrypted: true
 });
 
 /***/ }),
@@ -62403,7 +62402,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         var _this = this;
 
         this.getContacts();
-        Echo.private('messages' + this.user.id).listen('NewMessage', function (e) {
+        Echo.private('messages.' + this.user.id).listen('NewMessage', function (e) {
             console.log('handleIncoming', e.message);
             _this.handleIncoming(e.message);
         });
@@ -63050,6 +63049,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        contact: {
+            type: Object,
+            default: null
+        }
+    },
     data: function data() {
         return {
             message: ''
@@ -63087,7 +63092,10 @@ var render = function() {
           expression: "message"
         }
       ],
-      attrs: { placeholder: "Type message here and press Enter..." },
+      attrs: {
+        disabled: !_vm.contact,
+        placeholder: "Type message here and press Enter..."
+      },
       domProps: { value: _vm.message },
       on: {
         keydown: function($event) {
@@ -63139,7 +63147,10 @@ var render = function() {
         attrs: { contact: _vm.contact, messages: _vm.messages }
       }),
       _vm._v(" "),
-      _c("MessageComposer", { on: { send: _vm.sendMessage } })
+      _c("MessageComposer", {
+        attrs: { contact: _vm.contact },
+        on: { send: _vm.sendMessage }
+      })
     ],
     1
   )

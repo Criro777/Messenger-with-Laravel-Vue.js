@@ -11,13 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/contacts', 'ContactsController@index');
+    Route::get('/conversation/{id}', 'MessagesController@getMessagesForUser');
+    Route::post('/conversation/send', 'MessagesController@sendNewMessageToUser');
 });
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/contacts', 'ContactsController@index');
-Route::get('/conversation/{id}', 'MessagesController@getMessagesForUser');
-Route::post('/conversation/send', 'MessagesController@sendNewMessageToUser');

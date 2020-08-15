@@ -1,11 +1,17 @@
 <template>
     <div class="composer">
-        <textarea v-model="message" @keydown.enter="send" placeholder="Type message here and press Enter..."></textarea>
+        <textarea :disabled="!contact" v-model="message" @keydown.enter="send" placeholder="Type message here and press Enter..."></textarea>
     </div>
 </template>
 
 <script>
     export default {
+        props: {
+            contact: {
+                type: Object,
+                default: null
+            }
+        },
         data() {
             return {
                 message: ''
